@@ -36,6 +36,10 @@ describe('entries', function(){
         });
     });
 
+    afterEach(function(){
+        sandbox.restore();
+    });
+
     describe('hasItem', function(){
         beforeEach(function(){
             entries.hasItem(testUrl, callbackStub);

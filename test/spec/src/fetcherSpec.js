@@ -20,6 +20,10 @@ describe('getData', function(){
         fetcher.getData('http://beedogs.com', callbackStub);
     });
 
+    afterEach(function(){
+        sandbox.restore();
+    });
+
     it('makes a GET request for the url given', function(){
         expect(fakeRequest.calledOnce).toEqual(true);
     });
