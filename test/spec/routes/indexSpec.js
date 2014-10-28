@@ -3,7 +3,7 @@ var express = require('express');
 var sinon = require('sinon');
 var sandbox = sinon.sandbox.create();
 var indexRoute = require('../../../routes/index');
-var cacheController = require('../../../controllers/cache');
+var cacheApi = require('../../../controllers/api/cache');
 var server = require('../../../server');
 
 describe('index route', function(){
@@ -12,7 +12,7 @@ describe('index route', function(){
     var router;
 
     beforeEach(function(){
-        cacheGetStub = sandbox.stub(cacheController, 'get');
+        cacheGetStub = sandbox.stub(cacheApi, 'get');
         router = new express.Router();
         serverInstance = server.listen();
     });
@@ -22,7 +22,7 @@ describe('index route', function(){
         sandbox.restore();
     });
 
-    it('calls get on the cacheController, passing req and res', function(){
+    it('calls get on the cacheApi, passing req and res', function(){
         var req = {
                 method: 'get',
                 url: '/anything'

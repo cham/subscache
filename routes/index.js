@@ -1,6 +1,6 @@
 'use strict';
-var cacheController = require('../controllers/cache');
+var cacheApi = require('../controllers/api/cache');
 
 module.exports = function(router){
-    router.get('/*', cacheController.get);
+    router.get('/*', cacheApi.get);
 };
