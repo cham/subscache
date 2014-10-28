@@ -4,6 +4,19 @@ var request = require('request').defaults({
     json: true
 });
 var unresolvedRequests = {};
+var statusCodeToErrorStringMap = {
+    '401': 'Unauthorised'
+};
+
+function getResponseCodeError(errorCode){
+    var errorMessage = statusCodeToErrorStringMap[errorCode];
+
+    if(!errorMessage){
+        errorMessage = errorCode;
+    }
+
+    return new Error('The api responded with "' + errorMessage + '"');
+}
 
 function registerRequestCallback(url, callback){
     if(!unresolvedRequests[url]){
@@ -30,6 +43,9 @@ function getData(url, callback){
             unresolvedRequests[url].forEach(function(registeredCallback){
                 if(err){
                     return registeredCallback(err);
+                }
+                if(response.statusCode !== 200){
+                    return registeredCallback(getResponseCodeError(response.statusCode));
                 }
 
                 registeredCallback(null, data);

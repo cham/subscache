@@ -29,14 +29,33 @@ describe('getData', function(){
     });
 
     describe('when the GET resolves with data', function(){
-        beforeEach(function(){
-            fakeRequest.yield(null, null, {someData: 'yep'});
+        describe('if the response has a status code of 200', function(){
+            beforeEach(function(){
+                fakeRequest.yield(null, {statusCode: 200}, {someData: 'yep'});
+            });
+
+            it('executes the callback, passing the data as the second argument', function(){
+                expect(callbackStub.calledOnce).toEqual(true);
+                expect(callbackStub.args[0][0]).toEqual(null);
+                expect(callbackStub.args[0][1]).toEqual({someData: 'yep'});
+            });
         });
 
-        it('executes the callback, passing the data as the second argument', function(){
-            expect(callbackStub.calledOnce).toEqual(true);
-            expect(callbackStub.args[0][0]).toEqual(null);
-            expect(callbackStub.args[0][1]).toEqual({someData: 'yep'});
+        describe('if the response does not have a status code of 200', function(){
+            beforeEach(function(){
+                fakeRequest.yield(null, {statusCode: 401}, {probablyBadData: 'it seems likely'});
+            });
+
+            it('executes the callback, passing a readable error message as the error', function(){
+                expect(callbackStub.calledOnce).toEqual(true);
+                expect(callbackStub.args[0][0] instanceof Error).toEqual(true);
+                expect(callbackStub.args[0][0].message).toEqual('The api responded with "Unauthorised"');
+            });
+
+            it('does not pass the data given with the response', function(){
+                expect(callbackStub.calledOnce).toEqual(true);
+                expect(callbackStub.args[0][1]).not.toBeDefined();
+            });
         });
     });
 
@@ -67,7 +86,7 @@ describe('getData', function(){
 
         describe('when the GET resolves with data', function(){
             beforeEach(function(){
-                fakeRequest.yield(null, null, {someData: 'yep'});
+                fakeRequest.yield(null, {statusCode: 200}, {someData: 'yep'});
             });
 
             it('executes all callbacks for that URL, passing the data', function(){
